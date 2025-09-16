@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Indork">
+  <title>Advanced Research Dork Builder — Professional Search Query Tool</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&family=Source+Sans+Pro:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <h1><span class="academic-icon"></span>InDork - Advanced Dorking <span class="research-badge">PROFESSIONAL</span></h1>
+      <p class="tag">Build precise search queries for anything</p>
+    </div>
+  </header>
+
+  <main class="wrap main-grid">
+    <section class="panel controls">
+      <div class="tabs">
+        <div class="tab active" data-tab="basic">Basic Operators</div>
+        <div class="tab" data-tab="advanced">Advanced Options</div>
+        <div class="tab" data-tab="saved">Saved Queries</div>
+      </div>
+      
+      <div class="tab-content active" id="basic-tab">
+        <h2>Search Operators</h2>
+        <p class="muted">Complete one or more fields to construct your research query. The live preview updates as you type.</p>
+
+        <form id="operators-form">
+          <!-- dynamic inputs will be injected here -->
+        </form>
+
+        <div class="row small-gap">
+          <button id="btn-clear" class="btn ghost"><i class="fas fa-eraser"></i> Clear Form</button>
+          <button id="btn-reset" class="btn ghost"><i class="fas fa-redo"></i> Reset Examples</button>
+        </div>
+
+        <hr>
+
+        <h3>Research Examples</h3>
+        <div id="presets" class="presets"></div>
+      </div>
+      
+      <div class="tab-content" id="advanced-tab">
+        <h2>Advanced Options</h2>
+        
+        <div class="op-row">
+          <label for="search-language">Language:</label>
+          <select id="search-language">
+            <option value="">Any language</option>
+            <option value="lang_en">English</option>
+            <option value="lang_es">Spanish</option>
+            <option value="lang_fr">French</option>
+            <option value="lang_de">German</option>
+            <option value="lang_zh">Chinese</option>
+          </select>
+        </div>
+        
+        <div class="op-row">
+          <label for="search-region">Region:</label>
+          <select id="search-region">
+            <option value="">Any region</option>
+            <option value="countryUS">United States</option>
+            <option value="countryUK">United Kingdom</option>
+            <option value="countryCA">Canada</option>
+            <option value="countryAU">Australia</option>
+            <option value="countryDE">Germany</option>
+          </select>
+        </div>
+        
+        <div class="op-row">
+          <label for="time-range">Time Range:</label>
+          <select id="time-range">
+            <option value="">Any time</option>
+            <option value="d">Past 24 hours</option>
+            <option value="w">Past week</option>
+            <option value="m">Past month</option>
+            <option value="y">Past year</option>
+            <option value="custom">Custom range...</option>
+          </select>
+        </div>
+        
+        <div class="op-row">
+          <label for="usage-rights">Usage Rights:</label>
+          <select id="usage-rights">
+            <option value="">Not filtered by license</option>
+            <option value="sur:cl">Creative Commons</option>
+            <option value="sur:ol">Commercial & other licenses</option>
+            <option value="sur:l">Reuse with modification</option>
+          </select>
+        </div>
+        
+        <div class="op-row">
+          <label for="safe-search">SafeSearch:</label>
+          <select id="safe-search">
+            <option value="off">Off</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">Strict</option>
+          </select>
+        </div>
+        
+        <div class="row">
+          <button id="btn-export" class="btn ghost"><i class="fas fa-download"></i> Export Query</button>
+          <button id="btn-import" class="btn ghost"><i class="fas fa-upload"></i> Import Query</button>
+          <input type="file" id="import-file" accept=".json" style="display: none;">
+        </div>
+      </div>
+      
+      <div class="tab-content" id="saved-tab">
+        <h2>Saved Research Queries</h2>
+        <div id="saved-presets" class="presets"></div>
+        
+        <h3>Search History <button id="btn-clear-history" class="btn danger clear-history-btn"><i class="fas fa-trash"></i> Clear All</button></h3>
+        <div id="history" class="history"></div>
+      </div>
+    </section>
+
+    <aside class="panel preview">
+      <h2>Query Preview <span class="favorite-btn" id="favorite-btn"><i class="far fa-star"></i></span></h2>
+      
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value" id="operator-count">0</div>
+          <div class="stat-label">Operators</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="query-length">0</div>
+          <div class="stat-label">Length</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="result-estimate">N/A</div>
+          <div class="stat-label">Est. Results</div>
+        </div>
+      </div>
+      
+      <div class="query-complexity">
+        <div class="complexity-bar" id="complexity-bar"></div>
+      </div>
+      
+      <pre id="preview" class="preview-box" aria-live="polite">(your research query will appear here)</pre>
+
+      <div class="row">
+        <button id="btn-search" class="btn primary"><i class="fas fa-search"></i> Search Google</button>
+        <button id="btn-copy" class="btn ghost"><i class="fas fa-copy"></i> Copy Query</button>
+        <button id="btn-save" class="btn ghost"><i class="fas fa-save"></i> Save for Research</button>
+      </div>
+      
+      <div class="share-options">
+        <button id="btn-share-link" class="btn ghost share-btn"><i class="fas fa-link"></i> Share Link</button>
+        <button id="btn-export-json" class="btn ghost share-btn"><i class="fas fa-file-code"></i> Export as JSON</button>
+      </div>
+
+      <div class="search-tips">
+        <strong><i class="fas fa-lightbulb"></i> Pro Tip:</strong> Use the "site:edu" operator to limit results to educational institutions for more authoritative sources.
+      </div>
+
+      <div class="disclaimer">
+        <strong>Ethical Research Notice:</strong> This tool is intended for academic and research purposes only. Use it to discover publicly available information for legitimate scholarly work. Always respect copyright and access restrictions.
+      </div>
+
+      <details class="help">
+        <summary>Research Search Operators Guide</summary>
+        <ul>
+          <li><code>site:</code> Search within specific domains (e.g., <code>site:edu</code> for educational institutions)</li>
+          <li><code>filetype:</code> Limit to specific file types (e.g., <code>filetype:pdf</code> for research papers)</li>
+          <li><code>intitle:</code> Terms in document title</li>
+          <li><code>inurl:</code> Terms in the URL</li>
+          <li><code>author:</code> Search for specific authors</li>
+          <li>Use quotes for exact phrases and <code>-</code> to exclude terms</li>
+          <li><code>AROUND(n)</code> Find terms within n words of each other (e.g., <code>climate AROUND(5) change</code>)</li>
+        </ul>
+      </details>
+      
+      <div class="dark-mode-toggle">
+        <span>Dark Mode:</span>
+        <label class="switch">
+          <input type="checkbox" id="dark-mode-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">© 2025 Research Tools Initiative • Built for Academic Use • v2.1</div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-message">Operation completed successfully</span>
+  </div>
+
+  <!-- Share Modal -->
+  <div class="modal" id="share-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Share Query</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Copy this link to share your current query:</p>
+        <input type="text" id="share-link-input" readonly style="width: 100%; padding: 8px; margin-top: 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--panel-bg); color: var(--text);">
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost" id="copy-share-link">Copy Link</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js">
+  </script>
+</body>
+</html>
