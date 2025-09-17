@@ -351,7 +351,7 @@ body.dark-mode .hist-item {
   font-size: 0.9rem;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 768px) {
   .main-grid {
     grid-template-columns: 1fr;
   }
